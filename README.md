@@ -1,2 +1,2 @@
 # Data
-Data science projects and study
+Here i'll do projects on data science and case study.
