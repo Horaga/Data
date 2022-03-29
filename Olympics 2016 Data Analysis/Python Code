@@ -1,0 +1,70 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+#I'll import the summer olympics 2016 results dataframe
+
+summer = pd.read_csv("path/summer.csv")
+medals = summer[['Height','Weight','Medal']]
+sns.set_palette(sns.color_palette('colorblind'))
+#Plotting a scatterplot for all medals with height an weight to see if it matters
+a = sns.relplot(x = 'Height', y ='Weight', data = medals, hue = 'Medal', kind = 'scatter')
+a.fig.suptitle('Height vs. Weight Correlation to Medals')
+plt.show()
+
+#Since the data is to hard to see, i`ll separate it for medal
+grouped = medals.set_index('Medal')
+grouped = grouped.sort_index()
+
+#Slicing for Bronze, Silver and Gold medals
+bronze = grouped['Bronze':'Bronze']
+silver = grouped['Silver':'Silver']
+gold = grouped['Gold':'Gold']
+
+#Plotting these by medal scatterplots
+b=sns.relplot(x = 'Height', y = 'Weight', data = bronze, kind = 'scatter')
+b.fig.suptitle('Height vs. Weight Correlation for Bronze Medals', y =1.05)
+plt.show()
+
+c=sns.relplot(x = 'Height', y = 'Weight', data = silver, kind = 'scatter')
+c.fig.suptitle('Height vs. Weight Correlation for Silver Medals', y = 1.05)
+plt.show()
+
+d=sns.relplot(x = 'Height', y = 'Weight', data = gold, kind = 'scatter')
+d.fig.suptitle('Height vs. Weight Correlation for Gold Medals', y  = 1.05)
+plt.show()
+
+#Time to create a sports related dataframe to try to observe if the height and weight ratio
+#is relevant to the types of sports played, and also see if it influences in these sports the results on medals
+sport = summer[['Height','Weight','Medal','Sport']].set_index('Sport')
+sport['hw_proportion'] =  sport['Height']/sport['Weight']
+hw_medal = sport[['Medal','hw_proportion']]
+
+#Creating a list of categories of sports played at the Olympics
+categories = []
+for entry in hw_medal.index:
+    if entry in categories:
+        categories = categories
+    else:
+        categories.append(entry)
+#Sorting, just so i can be happier while looking at it
+categories.sort()
+
+#Creating a table with the mean values of the hw_proportion and categorizing it by sport and medals 
+table = pd.pivot_table(hw_medal,values = 'hw_proportion',columns = ['Medal'], index = ['Sport'], aggfunc = np.mean)
+
+#plotting it by the mean utilizing the standard deviation as ci
+e = sns.catplot(kind = 'bar', data = table, estimator =np.std )
+e.fig.suptitle('Height and Weight Proportion Mean and standard deviation', y = 1.05)
+plt.show()
+
+#Plotting the mean values for each sports type
+table2 =pd.pivot_table(hw_medal,values = 'hw_proportion',columns=['Sport'],index=['Medal'])
+f = sns.catplot(data = table2, kind = 'bar' )
+f.set_xticklabels(rotation = 90)
+f.set_axis_labels('Sports Categories','Height Weight Proportion mean')
+
+#trying
+table3 = table.reset_index()
+
+g = sns.catplot(data = table3, kind = 'bar', col = 'Sport', col_wrap=7)
