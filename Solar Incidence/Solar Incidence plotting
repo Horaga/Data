@@ -1,0 +1,76 @@
+"""
+Created on Mon Apr  4 00:01:42 2022
+
+@author: Horaga
+"""
+#Importing Libraries
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#Reading the given file with the right type of separator
+
+solar_median_normal_municipe = pd.read_csv('file path', sep = ';')
+
+#Creating a list of every state in this file so we can see it more clearly
+
+states = []
+
+for state in solar_median_normal_municipe['STATE']:
+    if state in states:
+        states = states
+    else:
+        states.append(state)
+        
+#Creating a list of month's names
+
+months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+
+#There are values for the solar incidence for monthly basis and annual means, i'll separate 
+#these for two comparisons 
+#Some states are big enough that it changes it`s values for some given cities, i'll use them
+#for comparison by state, but with a state vs state basis, just the mean will suffice.
+
+#Grouping the states and taking it's means
+
+state_vs_state = solar_median_normal_municipe.groupby('STATE').mean().sort_values('ANNUAL')
+
+
+#First plotting the graph for solar incidence for each state, since it's a categorical data,
+#the best practice is to do with a barplot
+plt.rcParams['figure.dpi'] = 500
+
+sns.set_style('whitegrid')
+
+ax = sns.barplot(data = state_vs_state,x = state_vs_state.index , y = 'ANNUAL')
+ax.set_xticklabels(state_vs_state.index,rotation = 90)
+ax.set_ylabel('SOLAR INCIDENCE(wh/m2.day)')
+ax.set_xlabel('STATES')
+ax.set_title('ANNUAL MEAN OF SOLAR INCIDENCE OF STATES IN BRAZIL')
+plt.show()
+
+#After this plotting, i want to see in this case the variance of solar incidence of the
+#"Distrito Federal" state of Brazil in the year period
+
+DistritoFederal = state_vs_state.loc[state_vs_state['ID'] == 19243]
+cDistritoFederal = DistritoFederal[months]
+
+ax1 = sns.barplot(data = cDistritoFederal)
+ax1.set_ylabel('SOLAR INCIDENCE(wh/m2.day)')
+ax1.set_xlabel('MONTHS')
+ax1.set_title('MONTHLY MEAN OF SOLAR INCIDENCE ON DISTRITO FEDERAL')
+plt.show()
+
+#Here's a code that will generate every plot for all of the states.
+
+reindex = state_vs_state[months].reset_index()
+
+for st in states:
+    variablerow = reindex.loc[reindex['STATE'] == st]
+    ax2 = sns.barplot(data = variablerow)
+    ax2.set_ylabel('SOLAR INCIDENCE(wh/m2.day)')
+    ax2.set_xlabel('MONTHS')
+    ax2.set_title('MONTHLY MEAN OF SOLAR INCIDENCE ON '+ st)
+    plt.show()
+    
