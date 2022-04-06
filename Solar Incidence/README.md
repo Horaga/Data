@@ -21,7 +21,7 @@ For this study, i was interested on seeing the solar incidence of diferent regio
     
 ![Monthly Mean of Solar Incidence on Distrito Federal](https://user-images.githubusercontent.com/101594934/162072852-71ae530c-b26c-4196-881b-0cc1111d2a8d.png)
 
-This plotting was also very useful, in it we can really see the changes in solar incidence because of seasons, this is of ultimate importance for companies that wish to get into the solar pannel business, this data can be used to see predict the fluctuations so their projects can produce energy to supply the low production months.
+This plotting was also very useful, in it we can really see the changes in solar incidence because of seasons, this is of ultimate importance for companies that wish to get into the solar pannel business, this data can be used to predict the fluctuations so their projects can produce energy to supply the low production months.
 
 Then as a matter of curiosity i did a code that would plot every single one of the states by it's month, just as we just saw in the case of Distrito Federal, so here are the plots, and thanks for reading through here.
 
